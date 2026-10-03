@@ -1,0 +1,23 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  merge_group:
+
+permissions:
+  contents: read
+
+jobs:
+  # 이 job 이름(check)이 main 병합의 필수 검사다.
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: ruleset JSON 형식
+        run: jq empty rulesets/*.json
+      - name: 셸 스크립트 검사
+        run: shellcheck scripts/*.sh
+  git-policy:
+    uses: ./.github/workflows/git-policy.yml

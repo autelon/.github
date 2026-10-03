@@ -1,0 +1,42 @@
+# 재사용 워크플로: Autelon 의 git 규칙 중 CI 가 강제하는 것.
+# 각 저장소 CI 에서 다음처럼 부른다. 필수 검사 이름은 "<부른 job 이름> / merge-commits" 가 된다.
+#
+#   jobs:
+#     git-policy:
+#       uses: autelon/.github/.github/workflows/git-policy.yml@main
+#
+# 부르는 워크플로에는 pull_request 와 merge_group 트리거가 모두 있어야 한다.
+name: git-policy
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  merge-commits:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        if: github.event_name == 'pull_request'
+        with:
+          fetch-depth: 0
+      # 작업 브랜치는 rebase 로만 최신화한다. main 을 merge 로 끌어온 커밋이 PR 에 있으면 실패한다.
+      - name: PR 에 merge 커밋이 없는지
+        if: github.event_name == 'pull_request'
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          merges=$(git rev-list --merges "$BASE..$HEAD")
+          if [ -n "$merges" ]; then
+            echo "PR 에 merge 커밋이 있다. main 을 merge 하지 말고 rebase 로 최신화한다:" >&2
+            echo "  git fetch origin && git rebase origin/main && git push --force-with-lease" >&2
+            git log --oneline --no-walk $merges >&2
+            exit 1
+          fi
+      # 머지 큐의 임시 브랜치는 병합 방식에 따라 merge 커밋을 만든다. 여기서는 검사할 것이 없다.
+      - name: 머지 큐 실행
+        if: github.event_name != 'pull_request'
+        run: echo "pull_request 에서 이미 검사했다."
