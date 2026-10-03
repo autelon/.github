@@ -4,6 +4,7 @@ Autelon 조직의 공용 설정 저장소다.
 
 | 경로 | 역할 |
 |---|---|
+| `git-workflow.md` | 모든 프로젝트의 Git 브랜치·병합 표준(브랜치 전략, main ruleset, 저장소 설정, PR 절차) |
 | `profile/README.md` | 조직 페이지(github.com/autelon) 첫 화면 |
 | `.github/pull_request_template.md` | 자체 PR 템플릿이 없는 조직 저장소의 기본 PR 템플릿 |
 | `.github/workflows/git-policy.yml` | 재사용 워크플로. PR 에 merge 커밋이 있으면 실패한다 |
