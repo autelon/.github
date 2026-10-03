@@ -1,3 +1,5 @@
+<img src="https://raw.githubusercontent.com/autelon/.github/main/brand/autelon-mark.png" width="96" alt="Autelon mark">
+
 # Autelon
 
 **From intent to complete systems, autonomously.**
