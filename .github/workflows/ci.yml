@@ -19,5 +19,3 @@ jobs:
         run: jq empty rulesets/*.json
       - name: 셸 스크립트 검사
         run: shellcheck scripts/*.sh
-  git-policy:
-    uses: ./.github/workflows/git-policy.yml

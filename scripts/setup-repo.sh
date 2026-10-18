@@ -24,15 +24,15 @@ visibility=$(gh api "repos/$repo" --jq .visibility)
 
 echo "== 저장소 설정 ($repo, $visibility)"
 gh api -X PATCH "repos/$repo" \
-  -F allow_merge_commit=true \
-  -F allow_squash_merge=false \
+  -F allow_merge_commit=false \
+  -F allow_squash_merge=true \
   -F allow_rebase_merge=false \
   -F allow_auto_merge=true \
   -F allow_update_branch=true \
   -F delete_branch_on_merge=true \
-  -f merge_commit_title=PR_TITLE \
-  -f merge_commit_message=PR_BODY \
-  --jq '{allow_merge_commit, allow_squash_merge, allow_rebase_merge, allow_auto_merge, allow_update_branch, delete_branch_on_merge, merge_commit_title, merge_commit_message}'
+  -f squash_merge_commit_title=PR_TITLE \
+  -f squash_merge_commit_message=PR_BODY \
+  --jq '{allow_merge_commit, allow_squash_merge, allow_rebase_merge, allow_auto_merge, allow_update_branch, delete_branch_on_merge, squash_merge_commit_title, squash_merge_commit_message}'
 
 checks=$(printf '%s\n' "$@" | jq -R '{context: .}' | jq -s .)
 ruleset=$(jq --argjson checks "$checks" --arg visibility "$visibility" '
